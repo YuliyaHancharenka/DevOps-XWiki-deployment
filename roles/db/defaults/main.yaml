@@ -1,0 +1,9 @@
+yum_packages:
+  - MySQL-python
+  - mariadb-server
+  - mariadb
+
+xwiki_db_host: localhost
+xwiki_db_user: xwikiuser
+xwiki_db_name: xwiki
+xwiki_db_pass: new_password_here

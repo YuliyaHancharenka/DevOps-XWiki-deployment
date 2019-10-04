@@ -1,0 +1,17 @@
+---
+yum_packages:
+  - java
+  - mysql-connector-java
+
+
+
+
+folder_tomcat_download: "/tmp/tomcat/"
+tomcat_download_link: "http://www-eu.apache.org/dist/tomcat/tomcat-9/v9.0.20/bin/{{ version_tomcat }}.tar.gz"
+version_tomcat: "apache-tomcat-9.0.20"
+path_to_mysql_connector: "/usr/share/java/mysql-connector-java.jar"
+
+server_xml_encoding: URIEncoding="UTF-8"
+
+tomcat_users_username: admin
+tomcat_users_password: admin_password

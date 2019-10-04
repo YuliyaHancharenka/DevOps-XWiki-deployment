@@ -1,0 +1,23 @@
+---
+- hosts: xwiki_servers
+  become: true 
+  vars_files: defaults/main.yaml
+  roles:
+    - tomcat
+    - db
+    - xwiki
+  tasks:
+    - name: Final. Change owner
+      shell: chown -R "{{ tomcat_user }}:" {{ tomcat_home_directory }}
+
+    - name: Final. Restart mysql
+      service:
+        name: mariadb
+        state: restarted
+        enabled: yes
+
+    - name: Final. Restart tomcat
+      service:
+        name: tomcat.service
+        state: restarted
+        enabled: yes

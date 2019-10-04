@@ -1,0 +1,28 @@
+---
+- name: Include Cent deploy
+  include: install_Cent.yaml
+  when: ansible_os_family == 'RedHat'
+
+
+- name: Mysql. Install and template
+  block:
+    - template:
+        src: .my.cnf
+        dest: "{{ tomcat_home_directory }}/.my.cnf"
+        owner: "{{ tomcat_user }}"
+        mode: 0600
+    - service:
+        name: mariadb.service
+        state: started
+        enabled: yes
+
+- name: MySQL. Create DB
+  mysql_db:
+    name: "{{ xwiki_db_name }}"
+    encoding: utf8
+
+- name: MySQL. Create user
+  mysql_user:
+    name: "{{ xwiki_db_user }}"
+    password: "{{ xwiki_db_pass }}"
+    priv: "{{ xwiki_db_name }}.*:ALL"

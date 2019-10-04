@@ -1,0 +1,11 @@
+superadmin_pass: system
+
+
+xwiki_db_host: localhost
+xwiki_db_user: xwikiuser
+xwiki_db_name: xwiki
+xwiki_db_pass: new_password_here
+
+#xwiki_war_url: "http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/10.11.8/xwiki-platform-distribution-war-10.11.8.war"
+
+xwiki_war_url: "http://nexus.xwiki.org/nexus/content/groups/public/org/xwiki/platform/xwiki-platform-distribution-war/11.4/xwiki-platform-distribution-war-11.4.war"

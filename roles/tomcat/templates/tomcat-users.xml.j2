@@ -1,0 +1,8 @@
+<tomcat-users>
+<!--
+         Comments
+-->
+   <role rolename="admin-gui"/>
+   <role rolename="manager-gui"/>
+   <user username="{{ tomcat_users_username }}" password="{{ tomcat_users_password }}" roles="admin-gui,manager-gui"/>
+</tomcat-users>

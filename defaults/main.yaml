@@ -1,0 +1,3 @@
+tomcat_home_directory: "/opt/tomcat"
+symlink_name: latest
+tomcat_user: tomcat

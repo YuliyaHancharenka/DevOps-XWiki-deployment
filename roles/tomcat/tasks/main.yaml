@@ -1,0 +1,107 @@
+---
+- name: Include Cent deploy
+  include: install_Cent.yaml
+  when: ansible_os_family == 'RedHat'
+ 
+
+
+- name: Tomcat. Create group tomcat
+  group:
+    name: "{{ tomcat_user }}"
+    state: present
+
+- name: Tomcat. Create user
+  user:
+    name: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    comment: "Managed by ansible"
+    shell: /bin/false
+    create_home: yes
+    home: "{{ tomcat_home_directory }}"
+    state: present
+
+- name: Tomcat. Create folder for download
+  file:
+    path: "{{ folder_tomcat_download }}"
+    state: directory
+
+- name: Tomcat. Download
+  get_url:
+    url: "{{ tomcat_download_link }}"
+    dest: "{{ folder_tomcat_download }}"
+
+- name: Tomcat. Extract archive
+  unarchive:
+    src: "{{ folder_tomcat_download }}/{{ version_tomcat }}.tar.gz"
+    dest: "{{ tomcat_home_directory }}"
+    remote_src: yes
+    keep_newer: yes
+
+
+- name: Tomcat. Create symlink
+  file:
+    src: "{{ tomcat_home_directory }}/{{ version_tomcat }}"
+    path: "{{ tomcat_home_directory }}/{{ symlink_name }}"
+    state: link
+
+- name: Tomcat. Remove directory for download
+  file:
+    path: "{{ folder_tomcat_download }}"
+    state: absent
+
+- name: Tomcat. Change owner
+  file:
+    dest: "{{ tomcat_home_directory }}"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+    recurse: yes
+
+- name: Tomcat. Make skripts executable
+  shell: chmod +x {{ tomcat_home_directory }}/{{ symlink_name }}/bin/*.sh
+
+- name: Tomcat. Create service
+  copy:
+    src: tomcat.service
+    dest: "/etc/systemd/system/"
+
+- name: Tomcat. Reload systemd
+  systemd:
+    daemon_reload: "yes"
+
+- name: Tomcat. Access template
+  block:
+    - name: Tomcat. Access template to web interface
+      template:
+        src: tomcat-users.xml.j2
+        dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/conf/tomcat-users.xml"
+        owner: "{{ tomcat_user }}"
+
+    - name: Tomcat. Access template to web management
+      template:
+        src: context.xml
+        dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/webapps/manager/META-INF/context.xml"
+        owner: "{{ tomcat_user }}"
+
+    - name: Tomcat. Access template to web management2
+      template:
+        src: context.xml
+        dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/webapps/host-manager/META-INF/context.xml"
+        owner: "{{ tomcat_user }}"
+
+- name: Tomcat. Add UTF-8
+  template:
+    src: server.xml.j2
+    dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/conf/server.xml"
+    owner: "{{ tomcat_user }}"
+
+- name: Tomcat. Restart and enable
+  service:
+    name: tomcat.service
+    state: restarted
+    enabled: yes
+
+- name: Create symlink to conector
+  file:
+    src: "{{ path_to_mysql_connector }}"
+    path: "{{ tomcat_home_directory }}/{{ symlink_name }}/lib/mysql-connector-java.jar"
+    state: link

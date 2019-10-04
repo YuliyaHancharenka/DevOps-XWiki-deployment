@@ -1,0 +1,24 @@
+---
+- name: Xwiki. Download xwiki
+  get_url:
+    url: "{{ xwiki_war_url }}"
+    dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/webapps/xwiki.war"
+    owner: "{{ tomcat_user }}"
+    group: "{{ tomcat_user }}"
+#    checksum: "{{ xwiki_war_url }}.sha1"
+
+- name: Xwiki. Wait while extract
+  pause:
+    seconds: 20
+
+- name: Tomcat. Add UTF-8
+  template:
+    src: hibernate.cfg.xml.j2
+    dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/webapps/xwiki/WEB-INF/hibernate.cfg.xml"
+    owner: "{{ tomcat_user }}"
+
+- name: Xwiki. Superuser activate
+  template:
+    src: xwiki.cfg.j2
+    dest: "{{ tomcat_home_directory }}/{{ symlink_name }}/webapps/xwiki/WEB-INF/xwiki.cfg"
+    owner: "{{ tomcat_user }}"

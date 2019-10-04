@@ -1,0 +1,6 @@
+---
+- name: MySQL. Install need packages
+  yum:
+    update_cache: yes
+    name: "{{ yum_packages }}"
+    state: latest
