@@ -2,7 +2,7 @@ pipeline {
     agent { label 'master' }
     triggers { pollSCM('* * * * *') }
     environment {
-      registry = "dockeryuliya/ansible"
+      registry = "dockeryuliya/sa_project"
   }
      
     stages {
